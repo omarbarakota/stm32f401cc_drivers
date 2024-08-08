@@ -1,48 +1,99 @@
-# ARM MCAL Drivers for stm32f401cc 
-
-These drivers are made for all students for learning porposes **ONLY**
-
-by: [Omar Barakat](https://www.linkedin.com/in/omarbarakota/)
-
-Feel free to use these drivers 
-
 ## Table Of Content
 
-[1- Description](#1--description)
+[1- Overview](#fverview)
 
-[2- Installation](#2--installation)
+[2- Features](#2--features)
 
-- [2.1- Install Drivers](#install-drivers)
+[3- Getting Started](#getting-started)
 
-- [2.2- Run Application](#run-application)
+[4- Example](#example)
 
-[Folder Structure](#folder-structure)
+[5- Repo Structure](#repo-structure)
 
-## 1- Description
+- [Contributing](#contributing)
 
-## 2- Installation
+- [Authors](#authors)
 
-### Install Drivers
+# STM32F401CC Drivers Repository
 
-Clone the repo and navigate to the project directory
+## Overview
 
-```bash
-git clone https://github.com/omarbarakota/stm32f401cc_drivers.git
+This repository contains a comprehensive collection of low-level drivers for the STM32F401CC microcontroller. These drivers are designed to provide easy access and control over the various peripherals and features of the STM32F401CC, enabling developers to build robust embedded systems with minimal overhead.
+
+## Features
+
+- **Modular Design:**
+  - Each driver is modular, making it easy to include only the components you need for your project.
+
+- **Peripheral Support:**
+  - **GPIO:** General-purpose input/output configuration and control.
+  - **USART:** Asynchronous serial communication.
+  - **SPI:** Serial Peripheral Interface master and slave modes.
+  - **I2C:** Inter-Integrated Circuit communication.
+  - **ADC:** Analog-to-Digital Conversion.
+  - **Timers:** Basic, general-purpose, and advanced timer configurations.
+  - **RCC:** Reset and Clock Control for clock source management and peripheral clock gating.
+  - **NVIC:** Nested Vectored Interrupt Controller for managing interrupts.
+
+- **Easy Integration:**
+  - Simple API designed for ease of use and integration into various applications.
+
+- **Optimized for Performance:**
+  - Efficient and lightweight code, optimized for the STM32F401CC microcontroller’s architecture.
+
+## Documentation
+
+- Detailed documentation for each driver is available in the respective `README.md` files within the driver directories.
+- Example projects and usage scenarios are provided to demonstrate how to utilize these drivers effectively.
+
+## Getting Started
+
+1. **Clone the Repository:**
+   - Clone this repository to your local machine using:
+   ```bash
+   git clone https://github.com/omarbarakota/stm32f401cc_drivers.git
+   ```
+
+2. **Include the Drivers in Your Project:**
+   - Add the required driver files to your project and include the corresponding headers.
+
+3. **Initialization:**
+   - Initialize the peripherals in your `main.c` or equivalent, using the provided API.
+
+4. **Build and Deploy:**
+   - Compile your project using your preferred IDE or toolchain (e.g., STM32CubeIDE, Keil, or GCC) and flash it onto your STM32F401CC.
+
+## Example
+
+```c
+#include "GPIO_Interface.h"
+#include "USART_Interface.h"
+
+int main(void) {
+    // Initialize the GPIO and USART drivers
+    GPIO_Init();
+    USART_Init();
+
+    // Application code
+    while (1) {
+        // Main loop
+    }
+}
 ```
 
-1- Copy the Header files with `.h` extention to the `includes` into your project
 
-2- Copy the source files with `.c` extention to the `src` into your project
+## Repo Structure
 
-### Run Application
+This is the sturcture of the whole repo and the drivers inside for example `X_Driver`:
 
-1- Include the Interface file into `main.c` by
-`#include "file_Interface.h"`
+- `X_Private.h`: This file include the physical addresses and fixed data
+- `X_Config.h`:  This file include any needed configuration to be set `Pre-compile configurations`
+- `X_Interface.h`: This file has all the interfaces that the user may need
+- `X_Types.h`: This File has all specialized types needed for `X Driver` 
 
-2- Using the functions inside you can run your needed application
+- `X_Program.c`: This file has all the implementation for the Whole Driver
 
-
-## folder-structure
+### Repo Example
 
 ````bash
 stm32f401cc Drivers
@@ -52,6 +103,7 @@ stm32f401cc Drivers
       |   |    └── RCC_Private.h    # This file include the physical addresses
       |   |    └── RCC_Config.h     # This file include any needed configuration
       |   |    └── RCC_Interface.h  # This file has all the interfaces that the user may need
+      |   |    └── RCC_Types.h      # This File has all specific needed types for RCC Driver 
       |   |
       └── └── src/      
       |       └── RCC_Program.c     # This file has all the implementation for the RCC Driver
@@ -61,9 +113,30 @@ stm32f401cc Drivers
       |   |    └── GPIO_Private.h    # This file include the physical addresses
       |   |    └── GPIO_Config.h     # This file include any needed configuration
       |   |    └── GPIO_Interface.h  # This file has all the interfaces that the user may need
+      |   |    └── GPIO_Types.h      # This File has all specific needed types for RCC Driver       
       |   |
       └── └── src/       
       |       └── GPIO_Program.c     # This file has all the implementation for the RCC Driver
       └── etc...
 ````
+## Supported Platforms
+
+- STM32F401Cx
+
+
+## Contributing
+
+Contributions are welcome! If you find any bugs or have suggestions for improvements, feel free to open an issue or submit a pull request.
+
+## Authors
+
+- [Omar Barakat](https://github.com/omarbarakota)
+
+## Acknowledgements
+
+- Inspired by the STM32 HAL library and CMSIS.
+
+
+
+
 
