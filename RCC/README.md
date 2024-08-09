@@ -47,10 +47,6 @@ The RCC (Reset and Clock Control) driver provides an interface to configure and 
 - `void RCC_u8InitSysClk(void);`
   - Initializes the RCC system with default or user-defined configurations.
 
-### Clock Configuration
-- `void RCC_ConfigureSystemClock(RCC_ClockSource_t source, uint32_t frequency);`
-  - Configures the system clock source and frequency.
-
 ### Peripheral Clock Management
 - `void RCC_u8EnablePeripheralClk(RCC_Peripheral_t peripheral);`
   - Enables the clock for a specific peripheral.
@@ -85,15 +81,12 @@ The RCC (Reset and Clock Control) driver provides an interface to configure and 
 #include "RCC_Interface.h"
 
 int main(void) {
+    
+    // Configure the system clock from RCC_Config.h file
     // Initialize RCC system
     RCC_u8InitSysClk();
-
-    // Configure the system clock to 72MHz using PLL
-    RCC_ConfigureSystemClock(RCC_CLOCKSOURCE_PLL, 72000000);
-
     // Enable clock for GPIOA
-    RCC_EnablePeripheralClock(RCC_PERIPHERAL_GPIOA);
-
+	  RCC_u8EnablePeriphiralClk(RCC_AHB1_BUS,RCC_AHB1ENR_GPIOA);
     // Your application code here
     
     while(1) {
