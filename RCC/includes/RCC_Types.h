@@ -5,10 +5,10 @@
  *      Author: Barakat
  */
 
-#ifndef MCAL_AUTOSARRCC_RCC_TYPES_H_
-#define MCAL_AUTOSARRCC_RCC_TYPES_H_
+#ifndef RCC_TYPES_H_
+#define RCC_TYPES_H_
 
-#include "STD_TYPES.h"
+#include "Types.h"
 
 typedef struct/*CR*/
 {
@@ -29,7 +29,6 @@ typedef struct/*CR*/
 	u32 RESERVED2	:4;
 }CR_Type;
 
-
 typedef struct/*PLLCFGR*/
 {
 	u32 PLLM		:6;
@@ -43,13 +42,10 @@ typedef struct/*PLLCFGR*/
 	u32 RESERVED3	:4;
 }PLLCFGR_Type;
 
-
 typedef struct/*CFGR*/
 {
-	u32 SW0			:1;
-	u32 SW1			:1;
-	u32 SWS0		:1;
-	u32 SWS1		:1;
+	u32 SW			:2;
+	u32 SWS			:2;
 	u32 HPRE		:4;
 	u32 RESERVED1	:2;
 	u32 PPRE1		:3;
@@ -61,7 +57,6 @@ typedef struct/*CFGR*/
 	u32 MCO2PRE		:3;
 	u32 MCO2		:2;
 }CFGR_Type;
-
 
 typedef struct/*CIR*/
 {
@@ -91,7 +86,6 @@ typedef struct/*CIR*/
 	u32 RESERVED	:8;
 }CIR_Type;
 
-
 typedef struct/*AHB1RSTR*/
 {
 	u32 GPIOARST	:1;
@@ -107,16 +101,18 @@ typedef struct/*AHB1RSTR*/
 	u32 DMA1RST		:1;
 	u32 DMA2RST		:1;
 	u32 RESERVED3	:9;
+}AHB1RSTR_BITS_Type;
+
+typedef union{
+	u32 REG;
+	AHB1RSTR_BITS_Type BITS;
 }AHB1RSTR_Type;
-
-
 typedef struct/*AHB2RSTR*/
 {
 	u32 RESERVED0	:7;
 	u32 OTGFSRST	:1;
-	u32 RESERVED0	:24;
+	u32 RESERVED1	:24;
 }AHB2RSTR_Type;
-
 
 typedef struct/*APB1RSTR*/
 {
@@ -135,11 +131,15 @@ typedef struct/*APB1RSTR*/
 	u32 I2C1RST		:1;
 	u32 I2C2RST		:1;
 	u32 I2C3RST		:1;
-	u32 RESERVED2	:4;
+	u32 RESERVED4	:4;
 	u32 PWRRST		:1;
-	u32 RESERVED2	:3;
-}APB1RSTR_Type;
+	u32 RESERVED5	:3;
+}APB1RSTR_BITS_Type;
 
+typedef union{
+	u32 REG;
+	APB1RSTR_BITS_Type BITS;
+}APB1RSTR_Type;
 
 typedef struct/*APB2RSTR*/
 {
@@ -159,8 +159,12 @@ typedef struct/*APB2RSTR*/
 	u32 TIM10RST	:1;
 	u32 TIM11RST	:1;
 	u32 RESERVED4:	13;
-}APB2RSTR_Type;
+}APB2RSTR_BITS_Type;
 
+typedef union{
+	u32 REG;
+	APB2RSTR_BITS_Type BITS;
+}APB2RSTR_Type;
 
 typedef struct/*AHB1ENR*/
 {
@@ -177,8 +181,11 @@ typedef struct/*AHB1ENR*/
 	u32 DMA1EN		:1;
 	u32 DMA2EN		:1;
 	u32 RESERVED4	:9;
+}AHB1ENR_BITS_Type;
+typedef union{
+	u32 REG;
+	AHB1ENR_BITS_Type BITS;
 }AHB1ENR_Type;
-
 
 typedef struct/*AHB2ENR*/
 {
@@ -186,7 +193,6 @@ typedef struct/*AHB2ENR*/
 	u32 OTGFSEN		:1;
 	u32 RESERVED1	:24;
 }AHB2ENR_Type;
-
 
 typedef struct/*APB1ENR*/
 {
@@ -205,11 +211,14 @@ typedef struct/*APB1ENR*/
 	u32 I2C1EN		:1;
 	u32 I2C2EN		:1;
 	u32 I2C3EN		:1;
-	u32 RESERVED3	:4;
+	u32 RESERVED4	:4;
 	u32 PWREN		:1;
-	u32 RESERVED4	:3;
+	u32 RESERVED5	:3;
+}APB1ENR_BITS_Type;
+typedef union{
+	u32 REG;
+	APB1ENR_BITS_Type BITS;
 }APB1ENR_Type;
-
 
 typedef struct/*APB2ENR*/
 {
@@ -229,8 +238,11 @@ typedef struct/*APB2ENR*/
 	u32 TIM10EN		:1;
 	u32 TIM11EN		:1;
 	u32 RESERVED4	:13;
+}APB2ENR_BITS_Type;
+typedef union{
+	u32 REG;
+	APB2ENR_BITS_Type BITS;
 }APB2ENR_Type;
-
 
 typedef struct/*AHB1LPENR*/
 {
@@ -250,16 +262,18 @@ typedef struct/*AHB1LPENR*/
 	u32 DMA1LPEN	:1;
 	u32 DMA2LPEN	:1;
 	u32 RESERVED4	:9;
+}AHB1LPENR_BITS_Type;
+typedef union{
+	u32 REG;
+	AHB1LPENR_BITS_Type BITS;
 }AHB1LPENR_Type;
-
 
 typedef struct/*AHB2LPENR*/
 {
 	u32 RESERVED0	:7;
 	u32 OTGFSLPEN	:1;
-	u32 RESERVED0	:24;
+	u32 RESERVED1	:24;
 }AHB2LPENR_Type;
-
 
 typedef struct/*APB1LPENR*/
 {
@@ -269,20 +283,23 @@ typedef struct/*APB1LPENR*/
 	u32 TIM5LPEN	:1;
 	u32 RESERVED3	:7;
 	u32 WWDGLPEN	:1;
-	u32 RESERVED3	:2;
+	u32 RESERVED4	:2;
 	u32 SPI2LPEN	:1;
 	u32 SPI3LPEN	:1;
-	u32 RESERVED4	:1;
+	u32 RESERVED5	:1;
 	u32 USART2LPEN	:1;
-	u32 RESERVED5	:3;
+	u32 RESERVED6	:3;
 	u32 I2C1LPEN	:1;
 	u32 I2C2LPEN	:1;
 	u32 I2C3LPEN	:1;
-	u32 RESERVED6	:4;
+	u32 RESERVED7	:4;
 	u32 PWRLPEN		:1;
-	u32 RESERVED7	:3;
+	u32 RESERVED8	:3;
+}APB1LPENR_BITS_Type;
+typedef union{
+	u32 REG;
+	APB1LPENR_BITS_Type BITS;
 }APB1LPENR_Type;
-
 
 typedef struct/*APB2LPENR*/
 {
@@ -301,9 +318,12 @@ typedef struct/*APB2LPENR*/
 	u32 TIM9LPEN	:1;
 	u32 TIM10LPEN	:1;
 	u32 TIM11LPEN	:1;
-	u32 RESERVED3	:13;
+	u32 RESERVED4	:13;
+}APB2LPENR_BITS_Type;
+typedef union{
+	u32 REG;
+	APB2LPENR_BITS_Type BITS;
 }APB2LPENR_Type;
-
 
 typedef struct/*BDCR*/
 {
@@ -316,26 +336,23 @@ typedef struct/*BDCR*/
 	u32 RESERVED1	:5;
 	u32 RTCEN		:1;
 	u32 BDRST		:1;
-	u32 RESERVED1	:15;
+	u32 RESERVED2	:15;
 }BDCR_Type;
-
 
 typedef struct/*CSR*/
 {
 	u32 LSION		:1;
 	u32 LSIRDY		:1;
-	u32 RESERVED0	:21;
+	u32 RESERVED0	:22;
 	u32 RMVF		:1;
 	u32 BORRSTF		:1;
 	u32 PINRSTF		:1;
 	u32 PORRSTF		:1;
 	u32 SFTRSTF		:1;
 	u32 IWDGRSTF	:1;
-	u32 IWDGRSTF	:1;
 	u32 WWDGRSTF	:1;
 	u32 LPWRRSTF	:1;
 }CSR_Type;
-
 
 typedef struct/*INCSTEP_BITS_Type*/
 {
@@ -382,7 +399,6 @@ typedef union/*MODPER_Type*/
 	MODPER_BITS_Type	BITS;
 	u32					ALLREG:13;
 }MODPER_Type;
-
 
 typedef struct/*SSCGR*/
 {
