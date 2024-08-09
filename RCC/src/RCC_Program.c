@@ -1,4 +1,10 @@
 /*
+ * RCC_Program.c
+ *
+ *  Created on: Aug 9, 2023
+ *      Author: Barakat
+ */
+/*
  * Driver:  RCC_Driver
  * Author:  Omar Barakat
  * Version: V 1.0
@@ -6,79 +12,86 @@
  * Description:
  * */
 
-#include "STD_TYPES.h"
-#include "BIT_MATHS.h"
+#include "Types.h"
+#include "Bitmath.h"
 
+#include "RCC_Types.h"
 #include "RCC_Config.h"
 #include "RCC_Private.h"
 #include "RCC_Interface.h"
 
-
-/* API Name:  
+/* API Name:
  * Parameter In: void
  * Parameter Out: u8 Error_State
  * Description:
  */
-u8 RCC_u8InitSysClk(void) {
+Error_Types RCC_u8InitSysClk(void) {
 
-	u8 Local_error_state = STD_TYPES_OK;
+	Error_Types Local_error_state = Types_OK;
 
-#if(RCC_u32_CLOCK_SRC==RCC_u32_HSI)
-	SET_BIT(RCC->RCC_CR, 0);
-	while (GET_BIT((RCC->RCC_CR),1) == BIT_RESET);
+#if(RCC_CLK_SRC==RCC_HSI)
+	RCC->CR.HSION= Types_HIGH;
+	while (RCC->CR.HSIRDY == Types_LOW);
+	//RCC->CFGR.SW=RCC_HSI;
+#elif(RCC_CLK_SRC== RCC_HSE)
 
-#elif(RCC_u32_CLOCK_SRC== RCC_u32_HSE)
-
-	#if(RCC_u32_HSE_MODE== RCC_u32_HSE_BYBASS)
-		SET_BIT((RCC->RCC_CR),18);
-	#elif(RCC_u32_HSE_MODE== RCC_u32_HSE_CRYSTAL)
+	#if(RCC_u32_HSE_MODE== RCC_HSE_BYBASS)
+		RCC->CR.HSEBYP=Types_HIGH;
+	#elif(RCC_u32_HSE_MODE== RCC_HSE_CRYSTAL)
 		CLEAR_BIT((RCC->RCC_CR),18);
+		RCC->CR.HSEBYP=Types_LOW;
 	#else
 		#error "wrong HSE Mode"
-		Local_error_state=STD_TYPES_NOK;
+		Local_error_state=Types_NOK;
 	#endif
-	SET_BIT((RCC->RCC_CR),16);
-	while(GET_BIT((RCC->RCC_CR),17)==BIT_RESET);
-	MODIFY_REG((RCC->RCC_CFGR),RCC_u32_CLOCK_SRC,RCC_CFGR_SW);
+	RCC->CR.HSEON=Types_HIGH;
+	while(RCC->CR.HSERDY==Types_LOW);
+	//switch to HSE as main clock source
+	//RCC->CFGR.SW=RCC_HSE;
+
 
 //in case of choosing PLL as clock source ,the PLL Clock input and multiplication factor must be configured
-#elif(RCC_u32_CLOCK_SRC==RCC_u32_PLL)
+#elif(RCC_CLK_SRC==RCC_PLL)
 
-	#if(RCC_u32_PLL_SRC==RCC_u32_PLL_SRC_HSI)
-		SET_BIT(RCC->RCC_CR, 0);
-		while (GET_BIT((RCC->RCC_CR),1) == BIT_RESET);
+	#if(RCC_PLL_SRC==RCC_PLL_HSI)
+		RCC->CR.HSION=Types_HIGH;
+		while (RCC->CR.HSIRDY == Types_LOW);
 
-	#elif(RCC_u32_PLL_SRC==RCC_u32_PLL_SRC_HSE)
+	#elif(RCC_PLL_SRC==RCC_PLL_HSE)
 
-			#if(RCC_u32_HSE_MODE== RCC_u32_HSE_BYBASS)
-					SET_BIT((RCC->RCC_CR),18);
-			#elif(RCC_u32_HSE_MODE== RCC_u32_HSE_CRYSTAL)
-					CLEAR_BIT((RCC->RCC_CR),18);
+			#if(RCC_HSE_MODE== RCC_HSE_BYBASS)
+					RCC->CR.HSEBYP=Types_HIGH;
+			#elif(RCC_HSE_MODE== RCC_HSE_CRYSTAL)
+					RCC->CR.HSEBYP=Types_LOW;
 			#else
-				#error "wrong HSE Mode"
-				Local_error_state=STD_TYPES_NOK;
+				#error "Wrong PLL HSE Mode"
+				Local_error_state=Types_NOK;
 
 				#endif
-
 			//Enable HSE clock and wait until stabilize
-			SET_BIT((RCC->RCC_CR),16);
-			while(GET_BIT((RCC->RCC_CR),17)==BIT_RESET);
-			//prepare PLL configs ans wait pll stabilize
-			MODIFY_REG(RCC->RCC_PLLCFGR,RCC_u32_PLL_SRC|RCC_u32_PLLP|RCC_u32_PLLN|RCC_u32_PLLM,RCC_PLLCFGR_PLLSRC|RCC_PLLCFGR_PLLP|RCC_PLLCFGR_PLLM|RCC_PLLCFGR_PLLN);
-			SET_BIT((RCC->RCC_CR),24);
-			while(GET_BIT((RCC->RCC_CR),25)==BIT_RESET);
-			//switch to PLL as main clock source
-			MODIFY_REG((RCC->RCC_CFGR),RCC_u32_CLOCK_SRC,RCC_CFGR_SW);
+			RCC->CR.HSEON=Types_HIGH;
+			while(RCC->CR.HSERDY==Types_LOW);
 
-			#endif
-
+		#endif
+		//prepare PLL configs ans wait pll stabilize
+		RCC->PLLCFGR.PLLM=RCC_PLLM;
+		RCC->PLLCFGR.PLLN=RCC_PLLN;
+		RCC->PLLCFGR.PLLQ=RCC_PLLQ;
+		RCC->PLLCFGR.PLLP=RCC_PLLP;
+		RCC->PLLCFGR.PLLSRC=RCC_PLL_SRC;
+		RCC->CR.PLLON=Types_HIGH;
+		while(RCC->CR.PLLRDY==Types_LOW);
+		//switch to PLL as main clock source
+		//RCC->CFGR.SW=RCC_PLL;
 
 #else
 	#error "wrong Clock source Mode"
-	Local_error_state=STD_TYPES_NOK;
+	Local_error_state=Types_NOK;
 #endif
-
-	SET_BIT(RCC->RCC_CR,7);
+	//switch to selected clock as main clock source
+	RCC->CFGR.SW=RCC_CLK_SRC;
+	//SET_BIT(RCC->RCC_CR,7);
+	//RCC->CR.HSITRIM=0x10;
 	return Local_error_state;
 }
 
@@ -87,15 +100,18 @@ u8 RCC_u8InitSysClk(void) {
  * Parameter Out:  u8 Error_State
  * Description:    Enable High Speed External Clock
  */
-u8 RCC_u8EnableHSE(u32 HSE_mode) {
-	u8 Local_error_state = STD_TYPES_OK;
-	if (HSE_mode == RCC_u32_HSE_CRYSTAL)
-		CLEAR_BIT((RCC->RCC_CR), 18);
-	else if (HSE_mode == RCC_u32_HSE_BYBASS)
-		SET_BIT((RCC->RCC_CR), 18);
-	SET_BIT((RCC->RCC_CR), 16);
-	while (GET_BIT((RCC->RCC_CR),17) == BIT_RESET)
-		;
+Error_Types RCC_u8EnableHSE(u32 HSE_mode) {
+	Error_Types Local_error_state = Types_OK;
+	if (HSE_mode == RCC_HSE_CRYSTAL)
+	{
+		RCC->CR.HSEBYP=Types_LOW;
+	}
+	else if (HSE_mode == RCC_HSE_BYPASS)
+	{
+		RCC->CR.HSEBYP=Types_HIGH;
+	}
+	RCC->CR.HSEON=Types_HIGH;
+	while (RCC->CR.HSERDY == Types_LOW);
 	return Local_error_state;
 }
 
@@ -104,12 +120,10 @@ u8 RCC_u8EnableHSE(u32 HSE_mode) {
  * Parameter Out:  u8 Error_State
  * Description:    Disable High Speed External Clock
  */
-u8 RCC_u8DisableHSE(void){
-	u8 Local_error_state = STD_TYPES_OK;
-	CLEAR_BIT(RCC->RCC_CR,16);
-
+Error_Types RCC_u8DisableHSE(void){
+	Error_Types Local_error_state = Types_OK;
+	RCC->CR.HSEON=Types_LOW;
 	return Local_error_state;
-
 }
 
 /* API Name:       RCC_u8EnableHSI
@@ -117,10 +131,10 @@ u8 RCC_u8DisableHSE(void){
  * Parameter Out:  u8 Error_State
  * Description:    Enable High Speed Internal Clock
  */
-u8 RCC_u8EnableHSI(void){
-	u8 Local_error_state = STD_TYPES_OK;
-	SET_BIT(RCC->RCC_CR, 0);
-	while (GET_BIT((RCC->RCC_CR),1) == BIT_RESET);
+Error_Types RCC_u8EnableHSI(void){
+	Error_Types Local_error_state = Types_OK;
+	RCC->CR.HSION=Types_HIGH;
+	while (RCC->CR.HSIRDY == Types_LOW);
 	return Local_error_state;
 
 }
@@ -130,12 +144,10 @@ u8 RCC_u8EnableHSI(void){
  * Parameter Out:  u8 Error_State
  * Description:    Disable High Speed Internal Clock
  */
-u8 RCC_u8DisableHSI(void){
-	u8 Local_error_state = STD_TYPES_OK;
-	CLEAR_BIT(RCC->RCC_CR, 0);
-
-		return Local_error_state;
-
+Error_Types RCC_u8DisableHSI(void){
+	Error_Types Local_error_state = Types_OK;
+	RCC->CR.HSION=Types_LOW;
+	return Local_error_state;
 }
 
 /* API Name:       RCC_u8EnablePeripheralClk
@@ -143,32 +155,31 @@ u8 RCC_u8DisableHSI(void){
  * Parameter Out:  u8 Error_State
  * Description:    Disable Peripheral's  Clock
  */
-u8 RCC_u8EnablePeripheralClk(u8 copy_u8BusId,u8 copy_u8Peripheral){
-	u8 Local_error_state = STD_TYPES_OK
-		;
+Error_Types RCC_u8EnablePeriphiralClk(u8 copy_u8BusId,u8 copy_u8Peripheral){
+	Error_Types Local_error_state = Types_OK;
 		if (copy_u8Peripheral <= 31) {
 			switch (copy_u8BusId) {
-			case RCC_u8_AHB1_BUS:
-				SET_BIT((RCC->RCC_AHB1ENR), copy_u8Peripheral);
+			case RCC_AHB1_BUS:
+				SET_BIT(RCC->AHB1ENR.REG, copy_u8Peripheral);
 				break;
-			case RCC_u8_AHB2_BUS:
-				SET_BIT((RCC->RCC_AHB2ENR), copy_u8Peripheral);
-						break;
-			case RCC_u8_APB1_BUS:
-				SET_BIT((RCC->RCC_APB1ENR), copy_u8Peripheral);
+			case RCC_AHB2_BUS:
+				//Because it's the only periphiral on AHB2 bus
+				RCC->AHB2ENR.OTGFSEN=Types_HIGH;
 				break;
-			case RCC_u8_APB2_BUS:
-				SET_BIT((RCC->RCC_APB2ENR), copy_u8Peripheral);
-
+			case RCC_APB1_BUS:
+				SET_BIT((RCC->APB1ENR.REG), copy_u8Peripheral);
+				break;
+			case RCC_APB2_BUS:
+				SET_BIT((RCC->APB2ENR.REG), copy_u8Peripheral);
 				break;
 			default:
-				Local_error_state = STD_TYPES_NOK;
+				Local_error_state = Types_NOK;
 				break;
 			}
 
 		}
 		else{
-			Local_error_state = STD_TYPES_NOK;
+			Local_error_state = Types_NOK;
 		}
 
 		return Local_error_state;
@@ -179,34 +190,33 @@ u8 RCC_u8EnablePeripheralClk(u8 copy_u8BusId,u8 copy_u8Peripheral){
  * Parameter Out:  u8 Error_State
  * Description:    Enable Peripheral's  Clock
  */
-u8 RCC_u8DisablePeripheralClk(u8 copy_u8BusId, u8 copy_u8Peripheral) {
-	u8 Local_error_state = STD_TYPES_OK
-	;
+Error_Types RCC_u8DisablePeriphiralClk(u8 copy_u8BusId, u8 copy_u8Peripheral) {
+	Error_Types Local_error_state = Types_OK;
 	if (copy_u8Peripheral <= 31) {
 		switch (copy_u8BusId) {
-		case RCC_u8_AHB1_BUS:
-			CLEAR_BIT((RCC->RCC_AHB1ENR), copy_u8Peripheral);
+		case RCC_AHB1_BUS:
+			CLR_BIT((RCC->AHB1ENR.REG), copy_u8Peripheral);
 			break;
-		case RCC_u8_AHB2_BUS:
-					CLEAR_BIT((RCC->RCC_AHB1ENR), copy_u8Peripheral);
-					break;
-		case RCC_u8_APB1_BUS:
-			CLEAR_BIT((RCC->RCC_APB1ENR), copy_u8Peripheral);
+		case RCC_AHB2_BUS:
+			//Because it's the only periphiral on AHB2 bus
+			RCC->AHB2ENR.OTGFSEN=Types_LOW;
+			break;
+		case RCC_APB1_BUS:
+			CLR_BIT((RCC->APB1ENR.REG), copy_u8Peripheral);
 
 			break;
-		case RCC_u8_APB2_BUS:
-			CLEAR_BIT((RCC->RCC_APB2ENR), copy_u8Peripheral);
+		case RCC_APB2_BUS:
+			CLR_BIT((RCC->APB2ENR.REG), copy_u8Peripheral);
 
 			break;
 		default:
-			Local_error_state = STD_TYPES_NOK
-			;
+			Local_error_state = Types_NOK;
 			break;
 		}
 
 	}
 	else{
-				Local_error_state = STD_TYPES_NOK;
+				Local_error_state = Types_NOK;
 			}
 
 	return Local_error_state;
