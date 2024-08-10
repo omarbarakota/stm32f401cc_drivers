@@ -120,16 +120,15 @@ git clone https://github.com/omarbarakota/stm32f401cc_drivers.git
 
 ````bash
 stm32f401cc RCC Driver
-      │
-      └── RCC/                  # This folder has the GPIO Driverfile
-      │   └── includes/         # This file Include all needed header files for RCC
-      |   |    └── RCC_Private.h    # This file include the physical addresses
-      |   |    └── RCC_Config.h     # This file include any needed configuration
-      |   |    └── RCC_Interface.h  # This file has all the interfaces that the user may need
+      └── includes/         # This file Include all needed header files for RCC
+      |   |  └── RCC_Private.h    # This file include the physical addresses
+      |   |  └── RCC_Config.h     # This file include any needed configuration
+      |   |  └── RCC_Interface.h  # This file has all the interfaces that the user may need
+      |   |  └── RCC_Types.h      # This File has all specific needed types for RCC Driver 
       |   |
-      └── └── src/      
-               └── RCC_Program.c    # This file has all the implementation for the RCC Driver
-     
+      └──  src/      
+      |      └── RCC_Program.c     # This file has all the implementation for the RCC Driver
+   
 ````
 
 ## Contributing
