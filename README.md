@@ -1,4 +1,5 @@
 # STM32F401CC Drivers Repository
+![View Counter](https://komarev.com/ghpvc/?username=omarbarakota&label=REPO+VIEWS&color=104de6&style=for-the-badge&base=30&abbreviated=true)
 
 ## Table Of Content
 
