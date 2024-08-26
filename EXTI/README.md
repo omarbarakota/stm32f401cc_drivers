@@ -27,6 +27,12 @@ These drivers are made for all students for learning porposes **ONLY**
 
 This repository contains an EXTI (External Interrupt) library designed for STM32F401CC microcontrollers. The library provides a set of macros, enums, and functions to configure and manage external interrupts in an efficient and user-friendly manner.
 
+### EXTI Diagram
+
+I made this diagram so you can visualize the circuit and processes 
+
+![EXTI Diagram](https://i.imgur.com/FzEpkVQ.png)
+
 ## Features
 
 - **Interrupt Masking**: Enable or disable external interrupt lines.
@@ -144,6 +150,17 @@ int main()
 }
 
 ```
+### Summary of the steps
+
+1- Enable the GPIO clock for the relevant port.
+2- Configure the GPIO pin as an input.
+3- (Optional) Configure pull-up/pull-down resistors for the GPIO pin.
+4- Map the GPIO pin to an EXTI line using the SYSCFG_EXTICR register.
+5- Set the EXTI trigger to rising edge (or falling edge, or both).
+6- Unmask the EXTI line in the IMR to enable interrupt generation.
+7- Enable the EXTI interrupt in the NVIC and set its priority.
+8- Implement the ISR to handle the interrupt and clear the pending bit.
+9- Run your main loop, relying on interrupts to handle external events.
 
 ## 3- Installation
 
