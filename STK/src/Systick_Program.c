@@ -17,7 +17,6 @@ u8 STK_u8SingleIntFlag=STK_IntervalFlag_Single;
 /* The Pointer that will hold the Task's function and call it */
 void(*STK_pToFunction)(void);
 
-
 /*Func name: STK_void_Init
  * Description: Initialize the Systick peripheral and select the systick clock source
  */
@@ -57,6 +56,21 @@ void STK_voidSetBusyWait(u32 Copyu32NoCounts){
 	STK->CTRL.BITS.TICKINT=Types_LOW;
 
 }
+
+void STK_voidSetDelayMs(u32 Delay_u32Ms){
+    // Assuming a system clock of 16 MHz and SysTick configured for 1 ms tick
+    // 1 ms delay corresponds to 16000 ticks (16 MHz / 1000)
+	u32 ticks = Delay_u32Ms * (STK_CLK_Value/1000);
+    STK_voidSetBusyWait(ticks);
+}
+
+void STK_voidSetDelayUs(u32 Delay_u32Us){
+    // Assuming a system clock of 16 MHz and SysTick configured for 1 us tick
+    // 1 us delay corresponds to 16 ticks (16 MHz / 1000000)
+    u32 ticks = Delay_u32Us * (STK_CLK_Value/1000000);
+    STK_voidSetBusyWait(ticks);
+}
+
 
 /*Func name: STK_voidSetIntervalSingle
  * Description: This function Adjust the task that the Systick handler will (Only for one time)
@@ -150,6 +164,7 @@ void SysTick_Handler(void){
 		 * can edit STK_ptrtofunc is the periodic function so it always execute the handler*/
 		STK_pToFunction();
 	}
+
 }
 
 
