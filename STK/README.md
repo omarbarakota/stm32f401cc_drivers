@@ -39,6 +39,20 @@ The SysTick driver provides an easy-to-use interface for configuring and managin
 - **Remaining Time Query:**
   - Check the remaining time before the SysTick timer expires, helping in tasks where the time left is critical.
 
+## Configuration Macros
+
+- **`STK_CLK_Value`**: This Macro should be modified in `SysTick_config.h` to have the system frequency for example if system clock is `16Mhz` 
+
+```C
+#define STK_CLK_Value 16000000
+```
+
+- **`STK_CLK`**: This macro should be modified depending on the options that you want `STK_AHB_CLK` or `STK_AHB_CLK_DIV_BY_8`
+```C
+#define STK_CLK		STK_AHB_CLK_DIV_BY_8
+```
+
+
 ## API Functions
 
 ### Initialization and Configuration
