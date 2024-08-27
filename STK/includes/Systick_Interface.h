@@ -19,6 +19,10 @@ void STK_void_Init();
  */
 void STK_voidSetBusyWait(u32 Copyu32NoCounts);
 
+void STK_voidSetDelayMs(u32 Delay_u32Ms);
+
+void STK_voidSetDelayUs(u32 Delay_u32Us);
+
 /*Func name: STK_voidSetIntervalSingle
  * Description: This function Adjust the task that the Systick handler will (Only for one time)
  * I/P arguments:
