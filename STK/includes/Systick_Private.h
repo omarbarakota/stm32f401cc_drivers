@@ -10,7 +10,7 @@
 
 #include "Systick_Types.h"
 
-#define STK 		((volatile STK_CorePreph_t*)0xE000E01C)
+#define STK 		((volatile STK_CorePreph_t*)0xE000E010)
 
 /* You can use only one way whether by accessing all registers in peripheral
  * using a single pointer To structure like what i did
